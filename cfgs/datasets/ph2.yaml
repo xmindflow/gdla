@@ -1,0 +1,14 @@
+# PH2 dermoscopy (200 images: 80 train / 20 val / 100 test; binary lesion segmentation).
+# One subfolder per case:
+#   <SPLIT_DIR>/<case_id>/<case_id>.bmp          (RGB image)
+#   <SPLIT_DIR>/<case_id>/<case_id>_lesion.bmp   (grayscale mask)
+DATA:
+  NAME: "ph2"
+  ROOT_DIR:  "/path/to/PH2"
+  TRAIN_DIR: "/path/to/PH2/train"
+  VAL_DIR:   "/path/to/PH2/val"
+  TEST_DIR:  "/path/to/PH2/test"
+  IMG_SIZE: [3, 224, 224]
+
+  TRANSFORM:
+    AUGMENT: true

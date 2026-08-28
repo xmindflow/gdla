@@ -1,0 +1,75 @@
+# PVT-GDLA (proposed): PVT-v2-b2 encoder + Gated Differential Linear Attention decoder.
+# Experiment: pvtgdla on PH2 (dermoscopy).
+# Run:
+#   python train_model.py --cfg cfgs/models/pvtgdla-ph2.yaml --dataset cfgs/datasets/ph2.yaml
+#   python test_model.py  --cfg cfgs/models/pvtgdla-ph2.yaml --dataset cfgs/datasets/ph2.yaml
+MODEL:
+  NAME: "pvtgdla"
+  IN_CHS: 3
+  N_CLASSES: 2
+  CHS: [64, 128, 320, 512]
+  N_HEADS: [2, 4, 10, 16]
+  QKV_BIAS: true
+  HIDDEN_RATIO: 4.0
+  NORM_EPS: 1.0e-5
+  US_KS: 3
+  DROP_PROB: 0.0
+  DEEPSUPERVISION: true
+
+CKPT:
+  DIR:  "checkpoints/pvtgdla-ph2"
+  BEST: "checkpoints/pvtgdla-ph2/best.ckpt"
+  LAST: "checkpoints/pvtgdla-ph2/last.ckpt"
+
+OPTIM:
+  NAME: "adamw"
+  BASE_LR: 5.0e-4
+  WARMUP_LR: 1.0e-6
+  MIN_LR: 1.0e-6
+  ADAMW:
+    BETAS: [0.9, 0.999]
+    EPS: 1.0e-8
+    WEIGHT_DECAY: 1.0e-4
+
+LRS:
+  NAME: "cosine"
+
+CRITERION:
+  NAME: "boundary"
+  SOFTMAX: true
+  SIGMOID: false
+  EPS: 1.0e-5
+
+METRIC:
+  DICE:
+    INCL_BG: false
+    REDUCTION: "mean_batch"
+    GET_NOT_NANS: true
+
+LOADER:
+  TRAIN:
+    BATCH_SIZE: 16
+    SHUFFLE: true
+    NUM_WORKERS: 4
+    PIN_MEMORY: true
+  VAL:
+    BATCH_SIZE: 32
+    SHUFFLE: false
+    NUM_WORKERS: 4
+    PIN_MEMORY: true
+  TEST:
+    BATCH_SIZE: 128
+    SHUFFLE: false
+    NUM_WORKERS: 4
+    PIN_MEMORY: true
+
+TRAIN:
+  MAX_NORM: 1.0
+  # N_ITER_PER_EPOCH should equal ceil(num_train_samples / LOADER.TRAIN.BATCH_SIZE).
+  N_ITER_PER_EPOCH: 5
+  WARMUP_EPOCHS: 5
+  N_EPOCHS: 100
+  STATS_FILEPATH: "stats.json"
+
+VAL:
+  VAL_EVERY_N_EPOCH: 1

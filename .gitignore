@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# editors / OS
+.DS_Store
+.idea/
+.vscode/
+
+# checkpoints & training artifacts
+checkpoints/
+results/
+*.ckpt
+stats.json
+
+# pretrained encoder weights (download separately, see pretrained/README.md)
+*.pth
+
+# datasets
+data/

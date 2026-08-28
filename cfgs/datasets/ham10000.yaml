@@ -1,0 +1,14 @@
+# HAM10000 dermoscopy (10,015 images, 70/10/20 train/val/test split; binary lesion segmentation).
+# One subfolder per image:
+#   <SPLIT_DIR>/<id>/ISIC_<id>.jpg                 (RGB image)
+#   <SPLIT_DIR>/<id>/ISIC_<id>_segmentation.png    (grayscale mask)
+DATA:
+  NAME: "ham10000"
+  ROOT_DIR:  "/path/to/HAM10000"
+  TRAIN_DIR: "/path/to/HAM10000/train"
+  VAL_DIR:   "/path/to/HAM10000/val"
+  TEST_DIR:  "/path/to/HAM10000/test"
+  IMG_SIZE: [3, 224, 224]
+
+  TRANSFORM:
+    AUGMENT: true

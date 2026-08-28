@@ -1,0 +1,16 @@
+# Synapse multi-organ CT (TransUNet protocol: 18 training / 12 test volumes, 8 organs + background).
+# Expected data layout:
+#   TRAIN_DIR: per-slice `.npz` files, each with arrays `image` [H,W] and `label` [H,W]
+#   VAL_DIR / TEST_DIR: per-volume `.npy.h5` files, each with datasets `image` / `label` [D,H,W]
+DATA:
+  NAME: "synapse"
+  ROOT_DIR:  "/path/to/Synapse"
+  TRAIN_DIR: "/path/to/Synapse/train_npz"
+  VAL_DIR:   "/path/to/Synapse/test_vol_h5"
+  TEST_DIR:  "/path/to/Synapse/test_vol_h5"
+  IMG_SIZE: [1, 224, 224]
+
+  TRANSFORM:
+    AUGMENT: true
+    P: 0.5
+    DEGREE: [-20, 20]

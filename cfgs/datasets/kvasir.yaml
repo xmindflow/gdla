@@ -1,0 +1,14 @@
+# Kvasir-SEG polyp segmentation (binary). NOTE: not part of the paper's reported benchmarks;
+# provided for convenience. One subfolder per case:
+#   <SPLIT_DIR>/<case_id>/<case_id>.png        (RGB image)
+#   <SPLIT_DIR>/<case_id>/<case_id>_mask.png   (grayscale mask)
+DATA:
+  NAME: "kvasir"
+  ROOT_DIR:  "/path/to/Kvasir"
+  TRAIN_DIR: "/path/to/Kvasir/train"
+  VAL_DIR:   "/path/to/Kvasir/val"
+  TEST_DIR:  "/path/to/Kvasir/test"
+  IMG_SIZE: [3, 224, 224]
+
+  TRANSFORM:
+    AUGMENT: true

@@ -1,0 +1,14 @@
+# BUSI breast-ultrasound (80/10/10 train/val/test split; binary lesion segmentation).
+# One subfolder per case:
+#   <SPLIT_DIR>/<case_id>/<case_id>.png        (RGB image)
+#   <SPLIT_DIR>/<case_id>/<case_id>_mask.png   (grayscale mask)
+DATA:
+  NAME: "busi"
+  ROOT_DIR:  "/path/to/BUSI"
+  TRAIN_DIR: "/path/to/BUSI/train"
+  VAL_DIR:   "/path/to/BUSI/val"
+  TEST_DIR:  "/path/to/BUSI/test"
+  IMG_SIZE: [3, 224, 224]
+
+  TRANSFORM:
+    AUGMENT: true

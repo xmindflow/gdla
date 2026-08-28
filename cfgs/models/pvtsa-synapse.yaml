@@ -1,0 +1,80 @@
+# PVT-SelfAttn baseline: PVT-v2-b2 encoder + multi-head softmax self-attention decoder.
+# Experiment: pvtsa on Synapse (multi-organ CT).
+# Run:
+#   python train_model.py --cfg cfgs/models/pvtsa-synapse.yaml --dataset cfgs/datasets/synapse.yaml
+#   python test_model.py  --cfg cfgs/models/pvtsa-synapse.yaml --dataset cfgs/datasets/synapse.yaml
+MODEL:
+  NAME: "pvtsa"
+  IN_CHS: 1
+  N_CLASSES: 9
+  CHS: [64, 128, 320, 512]
+  N_HEADS: [2, 4, 10, 16]
+  QKV_BIAS: true
+  HIDDEN_RATIO: 4.0
+  NORM_EPS: 1.0e-5
+  US_KS: 3
+  DROP_PROB: 0.0
+  DEEPSUPERVISION: true
+
+  SELF_ATTN:
+    USE_ROPE: true
+    ROPE_BASE: 10000.0
+    IMG_SIZE: [224, 224]
+
+CKPT:
+  DIR:  "checkpoints/pvtsa-synapse"
+  BEST: "checkpoints/pvtsa-synapse/best.ckpt"
+  LAST: "checkpoints/pvtsa-synapse/last.ckpt"
+
+OPTIM:
+  NAME: "adamw"
+  BASE_LR: 5.0e-4
+  WARMUP_LR: 1.0e-6
+  MIN_LR: 1.0e-6
+  ADAMW:
+    BETAS: [0.9, 0.999]
+    EPS: 1.0e-8
+    WEIGHT_DECAY: 1.0e-4
+
+LRS:
+  NAME: "cosine"
+
+CRITERION:
+  NAME: "boundary"
+  SOFTMAX: true
+  SIGMOID: false
+  EPS: 1.0e-5
+
+METRIC:
+  DICE:
+    INCL_BG: false
+    REDUCTION: "mean_batch"
+    GET_NOT_NANS: true
+
+LOADER:
+  TRAIN:
+    BATCH_SIZE: 8
+    SHUFFLE: true
+    NUM_WORKERS: 4
+    PIN_MEMORY: true
+  VAL:
+    BATCH_SIZE: 1
+    SHUFFLE: false
+    NUM_WORKERS: 4
+    PIN_MEMORY: true
+  TEST:
+    BATCH_SIZE: 1
+    SHUFFLE: false
+    NUM_WORKERS: 4
+    PIN_MEMORY: true
+
+TRAIN:
+  MAX_NORM: 1.0
+  # N_ITER_PER_EPOCH should equal ceil(num_train_samples / LOADER.TRAIN.BATCH_SIZE).
+  N_ITER_PER_EPOCH: 277
+  WARMUP_EPOCHS: 10
+  N_EPOCHS: 200
+  STATS_FILEPATH: "stats.json"
+
+VAL:
+  VAL_EVERY_N_EPOCH: 1

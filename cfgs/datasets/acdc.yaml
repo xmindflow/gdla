@@ -1,0 +1,15 @@
+# ACDC cardiac MRI (100 scans, 70/10/20 train/val/test split; RV, MYO, LV + background).
+# Files are listed with os.listdir and loaded with np.load; each holds arrays `img` and `label`.
+#   TRAIN_DIR: per-slice `.npz` (2D [H,W]);  VAL_DIR / TEST_DIR: per-volume `.npz` (3D [D,H,W]).
+DATA:
+  NAME: "acdc"
+  ROOT_DIR:  "/path/to/ACDC"
+  TRAIN_DIR: "/path/to/ACDC/train"
+  VAL_DIR:   "/path/to/ACDC/val"
+  TEST_DIR:  "/path/to/ACDC/test"
+  IMG_SIZE: [1, 224, 224]
+
+  TRANSFORM:
+    AUGMENT: true
+    P: 0.5
+    DEGREE: [-20, 20]
