@@ -60,7 +60,7 @@ class DiceLoss(nn.Module):
 
 
 @CRITERION.register(name="dice")
-def build_model(cfg) -> nn.Module:
+def build_criterion(cfg) -> nn.Module:
     return DiceLoss(
         softmax=cfg.CRITERION.SOFTMAX,
         sigmoid=cfg.CRITERION.SIGMOID,

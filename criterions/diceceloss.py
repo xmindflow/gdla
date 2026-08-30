@@ -44,7 +44,7 @@ class DiceCELoss(nn.Module):
 
 
 @CRITERION.register(name="dicece")
-def build_model(cfg) -> nn.Module:
+def build_criterion(cfg) -> nn.Module:
     return DiceCELoss(
         softmax=cfg.CRITERION.SOFTMAX,
         sigmoid=cfg.CRITERION.SIGMOID,

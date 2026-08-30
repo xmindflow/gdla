@@ -65,7 +65,7 @@ class BoundaryDoULoss(nn.Module):
 
 
 @CRITERION.register(name="boundary")
-def build_model(cfg) -> nn.Module:
+def build_criterion(cfg) -> nn.Module:
     return BoundaryDoULoss(
         softmax=cfg.CRITERION.SOFTMAX,
         sigmoid=cfg.CRITERION.SIGMOID,
