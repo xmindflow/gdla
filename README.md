@@ -3,6 +3,7 @@
 [![Paper](https://img.shields.io/badge/Paper-CVF%20Open%20Access-1b6ac9.svg)](https://openaccess.thecvf.com/content/CVPR2026F/papers/Zheng_Gated_Differential_Linear_Attention_A_Linear-Time_Decoder_for_High-Fidelity_Medical_CVPRF_2026_paper.pdf)
 [![arXiv](https://img.shields.io/badge/arXiv-2603.02727-b31b1b.svg)](https://arxiv.org/abs/2603.02727)
 [![Checkpoints](https://img.shields.io/badge/Checkpoints-GitHub%20Release-2ea44f.svg)](https://github.com/xmindflow/GDLA/releases)
+[![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-GDLA-yellow.svg)](https://huggingface.co/afshinbigboy/GDLA)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Official PyTorch implementation of
@@ -25,6 +26,7 @@ with a favorable accuracy/efficiency trade-off across CT, MRI, ultrasound, and d
 > experiments in the paper.
 
 ## Contents
+- [Quick start (no cloning)](#quick-start-no-cloning)
 - [Installation](#installation)
 - [Pretrained encoder](#pretrained-encoder)
 - [Pretrained checkpoints](#pretrained-checkpoints)
@@ -36,6 +38,33 @@ with a favorable accuracy/efficiency trade-off across CT, MRI, ultrasound, and d
 - [Results](#results)
 - [Repository layout](#repository-layout)
 - [Citation](#citation)
+
+## Quick start (no cloning)
+Load a pretrained PVT-GDLA with PyTorch Hub. The code is fetched from this repository and the
+weights from [Hugging Face](https://huggingface.co/afshinbigboy/GDLA); the ImageNet encoder file is
+not needed.
+
+```bash
+pip install torch torchvision timm monai "numpy<2" scipy SimpleITK huggingface_hub
+```
+
+```python
+import torch
+
+# A predictor applies the training preprocessing and returns a mask with the size of your input.
+# Datasets: "synapse", "acdc", "busi", "ham10000", "ph2".
+predictor = torch.hub.load("xmindflow/gdla", "predictor", dataset="ham10000", trust_repo=True)
+mask = predictor.predict("lesion.jpg")           # (H, W), 0 = background, 1 = lesion
+
+ct = torch.hub.load("xmindflow/gdla", "predictor", dataset="synapse", trust_repo=True)
+mask = ct.predict("abdomen_ct.nii.gz")           # (D, H, W), slice by slice
+
+# Or just the model: (B, C, 224, 224) -> list of logits, the last one is the final prediction
+model = torch.hub.load("xmindflow/gdla", "pvtgdla", dataset="synapse", trust_repo=True)
+```
+
+See the [model card](https://huggingface.co/afshinbigboy/GDLA) for the expected inputs and labels.
+These models are for research only and are not intended for clinical use.
 
 ## Installation
 Python **>= 3.10** is required.
@@ -56,7 +85,8 @@ commands from the repository root so the relative path resolves.
 
 ## Pretrained checkpoints
 PVT-GDLA weights for all five benchmarks are attached to the
-[GitHub release](https://github.com/xmindflow/GDLA/releases), one file per dataset. Each
+[GitHub release](https://github.com/xmindflow/GDLA/releases) and mirrored on
+[Hugging Face](https://huggingface.co/afshinbigboy/GDLA), one file per dataset. Each
 `.ckpt` holds the model weights only; optimizer and scheduler state have been stripped, so
 a file is ~129 MB. `SHA256SUMS.txt` on the same page lets you verify a download with
 `sha256sum -c SHA256SUMS.txt --ignore-missing`.
@@ -250,6 +280,7 @@ HAM10000 150/10/16, PH2 100/5/16.
 ├── splits/              # case-ID lists for the PH2 split and the HAM10000 test set
 ├── train_model.py       # training entry point
 ├── test_model.py        # evaluation entry point
+├── hubconf.py           # PyTorch Hub entry points
 └── requirements.txt
 ```
 

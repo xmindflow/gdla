@@ -26,18 +26,20 @@ class PVTGDLA(nn.Module):
             us_ks: int = 3,
             drop_prob: float = 0.,
             deepsupervision: bool = False,
+            encoder_ckpt: str | None = "pretrained/pvt_v2_b2.pth",
     ) -> None:
         super().__init__()
         self.deepsupervision = deepsupervision
 
         self.backbone = pvt_v2_b2()
-        path = "pretrained/pvt_v2_b2.pth"
-        save_model = torch.load(path)
-        model_dict = self.backbone.state_dict()
-        state_dict = {k: v for k, v in save_model.items() if k in model_dict.keys()}
-        model_dict.update(state_dict)
-        self.backbone.load_state_dict(model_dict)
-        print("Loaded pretrained weights")
+        # encoder_ckpt=None skips the ImageNet encoder, e.g. when a full checkpoint is loaded afterwards
+        if encoder_ckpt is not None:
+            save_model = torch.load(encoder_ckpt)
+            model_dict = self.backbone.state_dict()
+            state_dict = {k: v for k, v in save_model.items() if k in model_dict.keys()}
+            model_dict.update(state_dict)
+            self.backbone.load_state_dict(model_dict)
+            print("Loaded pretrained weights")
 
         # [H/32,W/32] -> [H/16,W/16]
         self.up1 = Upsample(
